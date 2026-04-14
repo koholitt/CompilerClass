@@ -1,0 +1,67 @@
+﻿<Window x:Class="CompilerUi.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        Title="Compiler Lexer" Height="600" Width="900" Background="#F0F0F0">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="120"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5">
+            <avalonEdit:TextEditor Name="txtCodeEditor" 
+                                   FontFamily="Consolas" 
+                                   FontSize="12pt" 
+                                   ShowLineNumbers="True"/>
+        </Border>
+
+        <Button Grid.Row="0" Grid.Column="2" Content="ANALIZAR" 
+                VerticalAlignment="Top" HorizontalAlignment="Center" 
+                Width="100" Height="30" Margin="5" Click="BtnAnalizar_Click"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
+            <Label Content="ERRORES" Background="#A0B8D0" Foreground="White" FontWeight="Bold"/>
+            <ListBox x:Name="lstErrores" Height="150"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" Grid.Column="1" x:Name="dgTokens" 
+                  AutoGenerateColumns="False" Margin="5" Background="#A0B8D0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="LEXEMA" Binding="{Binding Lexema}" Width="*"/>
+                <DataGridTextColumn Header="TIPO" Binding="{Binding Tipo}" Width="*"/>
+                <DataGridTextColumn Header="LINEA" Binding="{Binding Linea}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <UniformGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Columns="5" Margin="5">
+            <StackPanel Margin="2">
+                <Label Content="RESERVADAS" Background="#A0B8D0" Foreground="White"/>
+                <ListBox x:Name="lstReservadas" Height="120"/>
+            </StackPanel>
+            <StackPanel Margin="2">
+                <Label Content="IDENTIFICADORES" Background="#A0B8D0" Foreground="White"/>
+                <ListBox x:Name="lstIdentificadores" Height="120"/>
+            </StackPanel>
+            <StackPanel Margin="2">
+                <Label Content="DELIMITADORES" Background="#A0B8D0" Foreground="White"/>
+                <ListBox x:Name="lstDelimitadores" Height="120"/>
+            </StackPanel>
+            <StackPanel Margin="2">
+                <Label Content="OPERADORES" Background="#A0B8D0" Foreground="White"/>
+                <ListBox x:Name="lstOperadores" Height="120"/>
+            </StackPanel>
+            <StackPanel Margin="2">
+                <Label Content="NUMEROS" Background="#A0B8D0" Foreground="White"/>
+                <ListBox x:Name="lstNumeros" Height="120"/>
+            </StackPanel>
+        </UniformGrid>
+    </Grid>
+</Window>

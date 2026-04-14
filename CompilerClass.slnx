@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CompilerClass/CompilerClass.csproj" />
+  <Project Path="CompilerUi/CompilerUi.csproj" />
+</Solution>

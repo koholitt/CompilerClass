@@ -1,0 +1,7 @@
+﻿<SyntaxDefinition name="MyLanguage" xmlns="http://icsharpcode.net/sharpdevelop/avalonedit/syntaxdefinition/2008">
+	<Color name="Operators" foreground="#C586C0" fontWeight="bold" /> <RuleSet>
+		<Rule color="Operators">
+			[+*|&lt;&gt;!=/-]+
+		</Rule>
+	</RuleSet>
+</SyntaxDefinition>
