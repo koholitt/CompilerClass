@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using AccesoDatos;
+using CompilerClass; // Added this for SemanticAnalizer
 using CompilerClass.Models;
 using ICSharpCode.AvalonEdit.Highlighting;
-using System.Windows.Controls; // For TreeView
+using System.Windows.Controls;
 
 namespace CompilerUi
 {
-    // Basic Node class to support the Tree structure
     public class Nodo
     {
         public string valor { get; set; }
@@ -20,6 +20,7 @@ namespace CompilerUi
     public partial class MainWindow : Window
     {
         private LexicAnalizer _analizador = new LexicAnalizer();
+        private SemanticAnalizer _semantico = new SemanticAnalizer(); // New instance
 
         public MainWindow()
         {
@@ -43,25 +44,35 @@ namespace CompilerUi
         private void BtnAnalizar_Click(object sender, RoutedEventArgs e)
         {
             string codigo = txtCodeEditor.Text;
-            List<Tokens> listaTokens = _analizador.Analizar(codigo);
 
+            // 1. Clear previous errors and UI state
+            lstErrores.Items.Clear();
+            treeView1.Items.Clear();
+
+            // 2. Lexical Analysis
+            List<Tokens> listaTokens = _analizador.Analizar(codigo);
             dgTokens.ItemsSource = null;
             dgTokens.ItemsSource = listaTokens;
 
+            // 3. Semantic Analysis
+            _semantico.Validar(listaTokens);
+
+            // 4. Update UI Lists (Lexical)
             ActualizarListasDinamicas(listaTokens);
 
-            // --- Merged Tree Logic ---
-            treeView1.Items.Clear(); // Clear previous tree
-            Nodo raiz = ConstruirArbol(listaTokens);
+            // 5. Add Semantic Errors to the error box
+            foreach (var error in _semantico.ErroresSemanticos)
+            {
+                lstErrores.Items.Add(error);
+            }
 
+            // 6. Build and Show Tree
+            Nodo raiz = ConstruirArbol(listaTokens);
             TreeViewItem nodoRaizUI = new TreeViewItem { Header = raiz.valor };
             treeView1.Items.Add(nodoRaizUI);
-
             MostrarArbol(raiz, nodoRaizUI);
-            // In WPF, expansion is usually handled via ItemContainerStyle or manual loop
         }
 
-        // Logic merged from snippet 1: Creates the hierarchy
         public Nodo ConstruirArbol(List<Tokens> tokens)
         {
             Nodo raiz = new Nodo("Programa");
@@ -73,7 +84,6 @@ namespace CompilerUi
                 Nodo nuevo = new Nodo(token.Lexema);
                 pila.Peek().hijos.Add(nuevo);
 
-                // Logic from snippet 1: nesting logic
                 if (token.Lexema == "(" || token.Lexema == "{")
                 {
                     pila.Push(nuevo);
@@ -86,7 +96,6 @@ namespace CompilerUi
             return raiz;
         }
 
-        // Logic merged from snippet 1: Populates the UI TreeView
         void MostrarArbol(Nodo nodo, TreeViewItem treeNodeUI)
         {
             foreach (var hijo in nodo.hijos)
@@ -101,7 +110,7 @@ namespace CompilerUi
         {
             lstIdentificadores.Items.Clear();
             lstNumeros.Items.Clear();
-            lstErrores.Items.Clear();
+            // Note: lstErrores is cleared at the start of BtnAnalizar_Click
 
             foreach (var token in tokens)
             {
@@ -116,8 +125,8 @@ namespace CompilerUi
                             lstNumeros.Items.Add(token.Lexema);
                         break;
                     case "Error":
-                        if (!lstErrores.Items.Contains(token.Lexema))
-                            lstErrores.Items.Add(token.Lexema);
+                        // Add lexical errors (invalid characters) to the box
+                        lstErrores.Items.Add($"Léxico: Caracter inválido '{token.Lexema}' (Línea {token.Linea})");
                         break;
                 }
             }
