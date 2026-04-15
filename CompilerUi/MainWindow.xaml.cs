@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using AccesoDatos;
-using CompilerClass; // Added this for SemanticAnalizer
+using CompilerClass;
 using CompilerClass.Models;
 using ICSharpCode.AvalonEdit.Highlighting;
 using System.Windows.Controls;
